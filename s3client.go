@@ -74,7 +74,7 @@ func NewS3Client(
 	useV2Signing bool,
 	roleToAssume string,
 ) S3Client {
-	sess := session.New(awsConfig)
+	sess := session.Must(session.NewSession())
 
 	assumedRoleAwsConfig := fetchCredentialsForRoleIfDefined(roleToAssume, awsConfig)
 
@@ -116,9 +116,7 @@ func NewAwsConfig(
 ) *aws.Config {
 	var creds *credentials.Credentials
 
-	if accessKey == "" && secretKey == "" {
-		creds = credentials.AnonymousCredentials
-	} else {
+	if accessKey != "" && secretKey != "" {
 		creds = credentials.NewStaticCredentials(accessKey, secretKey, sessionToken)
 	}
 
